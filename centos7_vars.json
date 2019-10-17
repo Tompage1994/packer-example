@@ -1,0 +1,4 @@
+{
+  "vsphere_username": "svc_ansible",
+  "vsphere_password": "ansible"
+}

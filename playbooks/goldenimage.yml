@@ -1,0 +1,7 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: import a role
+      import_role:
+        name: example-role

@@ -1,0 +1,1 @@
+This is an example structure for packer. This will not work out of the box and is intended to be a reference guide.

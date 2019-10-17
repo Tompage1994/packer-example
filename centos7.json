@@ -1,0 +1,48 @@
+{
+  "builders": [
+    {
+      "type": "vsphere-iso",
+
+      "vcenter_server": "vsphere.example.com",
+      "username": "{{user `vsphere_username`}}",
+      "password": "{{user `vsphere_password`}}",
+
+      "vm_name": "centos7-{{user `BRANCH_NAME`}}-{{user `BUILD_NUMBER`}}",
+      "datacenter": "datacenter01",
+      "cluster": "cluster01",
+      "network": "network01",
+      "datastore": "datastore01",
+      "folder": "vmtemplates/goldenimages",
+      "resource_pool": "ansible",
+
+      "network_card": "vmxnet3",
+      "guest_os_type": "centos7_64Guest",
+
+      "ssh_username": "ansible",
+      "ssh_password": "ansible",
+
+      "CPUs":             1,
+      "RAM":              1024,
+      "RAM_reserve_all": false,
+
+      "disk_size":        32768,
+      "disk_controller_type":  "pvscsi",
+      "disk_thin_provisioned": true,
+
+
+      "iso_paths": [
+        "[datastore01] ISO/centos7-0001.iso"
+      ],
+      "floppy_files": "./files/ks.cfg",
+      "boot_command": ["<up><tab>inst.text inst.ks=hd:fd0:/ks.cfg<enter><wait>"],
+      "convert_to_template": true
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "./playbooks/goldenimage.yml"
+    }
+  ]
+}

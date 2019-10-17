@@ -1,0 +1,61 @@
+pipeline {
+  agent {
+    label 'packer'
+  }
+
+  stages {
+
+    stage ('Get latest code') {
+      steps {
+        dir('packer-example') {
+          checkout scm
+        }
+      }
+    }
+
+    stage ('Display versions') {
+      steps {
+        sh '''
+          #!/bin/bash
+          ansible --version
+          packer --version
+        '''
+      }
+    }
+
+    stage ('Validate vSphere template') {
+      steps {
+        dir("packer-example") {
+          sh '''
+            #!/bin/bash
+            packer validate --var "BUILD_NUMBER=${BUILD_NUMBER}" --var "BRANCH_NAME=${BRANCH_NAME}" -var-file=centos7_vars.json centos7.json
+          '''
+        }
+      }
+    }
+
+    stage ('Get latest roles') {
+      steps {
+        dir("packer-example") {
+          sh '''
+            #!/bin/bash
+            ansible-galaxy install -f -r roles/requirements.yml
+          '''
+        }
+      }
+    }
+
+    stage ('Build Image on vSphere') {
+      steps {
+        dir("packer-example") {
+          sh '''
+            #!/bin/bash
+            packer build --var "BUILD_NUMBER=${BUILD_NUMBER}" --var "BRANCH_NAME=${BRANCH_NAME}" -var-file=centos7_vars.json centos7.json
+          '''
+        }
+      }
+    }
+
+  } 
+
+}

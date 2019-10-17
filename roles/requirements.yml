@@ -1,0 +1,4 @@
+---
+- name: example-role
+  src: https://git.example.com/example-role.git
+  scm: git
